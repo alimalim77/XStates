@@ -13,30 +13,6 @@ function App() {
     city: "",
   });
 
-  const fetchCountries = async () => {
-    const country = await fetch(
-      `https://crio-location-selector.onrender.com/countries`
-    );
-    const respCountry = await country.json();
-    setCountries(respCountry);
-  };
-
-  const fetchStates = async () => {
-    const state = await fetch(
-      `https://crio-location-selector.onrender.com/country=${formData.country}/states`
-    );
-    const respState = await state.json();
-    setStates(respState);
-  };
-
-  const fetchCities = async () => {
-    const city = await fetch(
-      `https://crio-location-selector.onrender.com/country=${formData.country}/state=${formData.state}/cities`
-    );
-    const respCity = await city.json();
-    setCities(respCity);
-  };
-
   useEffect(() => {
     fetchCountries();
   }, []);
@@ -51,6 +27,42 @@ function App() {
     setFormData((data) => ({ ...data, city: "" }));
   }, [formData.state]);
 
+  const fetchCountries = async () => {
+    try {
+      const country = await fetch(
+        `https://crio-location-selector.onrender.com/countries`
+      );
+      const respCountry = await country.json();
+      setCountries(respCountry);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const fetchStates = async () => {
+    try {
+      const state = await fetch(
+        `https://crio-location-selector.onrender.com/country=${formData.country}/states`
+      );
+      const respState = await state.json();
+      setStates(respState);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const fetchCities = async () => {
+    try {
+      const city = await fetch(
+        `https://crio-location-selector.onrender.com/country=${formData.country}/state=${formData.state}/cities`
+      );
+      const respCity = await city.json();
+      setCities(respCity);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   return (
     <div className="App">
       <h1>Select Location</h1>
@@ -61,8 +73,14 @@ function App() {
             setFormData((data) => ({ ...data, country: e.target.value }));
           }}
         >
-          <option selected>Select a Country</option>
-          {countries && countries.map((country) => <option>{country}</option>)}
+          <option value="" disabled>
+            Select Country
+          </option>
+          {countries.map((country) => (
+            <option key={country} value={country}>
+              {country}
+            </option>
+          ))}
         </select>
         <select
           value={formData.state}
@@ -70,8 +88,14 @@ function App() {
             setFormData((data) => ({ ...data, state: e.target.value }))
           }
         >
-          <option selected>Select a State</option>
-          {states.length && states.map((state) => <option>{state}</option>)}
+          <option value="" disabled>
+            Select State
+          </option>
+          {states.map((state) => (
+            <option key={state} value={state}>
+              {state}
+            </option>
+          ))}
         </select>
         <select
           value={formData.city}
@@ -79,8 +103,14 @@ function App() {
             setFormData((data) => ({ ...data, city: e.target.value }))
           }
         >
-          <option selected>Select a city</option>
-          {cities.length && cities.map((city) => <option>{city}</option>)}
+          <option value="" disabled>
+            Select City
+          </option>
+          {cities.map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
         </select>
       </div>
       {!!formData.city && (
